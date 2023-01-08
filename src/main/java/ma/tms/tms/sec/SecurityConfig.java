@@ -21,6 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication().withUser("Agent Commercial").password(encodePWD).roles("Agent Commercial");
         auth.inMemoryAuthentication().withUser("Admin").password(encodePWD).roles("Admin");
         auth.inMemoryAuthentication().withUser("Gestionnaire de flotte").password(encodePWD).roles("Gestionnaire de flotte");
+        auth.inMemoryAuthentication().withUser("Dispatch").password(encodePWD).roles("Dispatch");
     }
 
     @Override

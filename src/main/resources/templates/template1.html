@@ -42,11 +42,11 @@
         <hr class="sidebar-divider my-0">
 
         <!-- Nav Item - Dashboard -->
-        <!--<li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link"  th:href="@{/Dashboard}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
-        </li>-->
+        </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider">
@@ -61,13 +61,13 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-user"></i>
-                <span>Gestion des utilisateurs </span>
+                <span>Gestion des conducteurs </span>
             </a>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Custom Components:</h6>
-                    <a class="collapse-item"  th:href="@{/Ajouterconducteurs}">Ajouter des utilisateurs </a>
-                    <a class="collapse-item" th:href="@{/Listeconducteurs}">Lister des utilisateurs </a>
+                    <a class="collapse-item"  th:href="@{/Ajouterconducteurs}">Ajouter des conducteurs </a>
+                    <a class="collapse-item" th:href="@{/Listeconducteurs}">Lister des conducteurs </a>
                 </div>
             </div>
         </li>
@@ -103,7 +103,7 @@
                 </div>
             </div>
         </li>
-        <li class="nav-item" sec:authorize="hasRole('Admin')">
+        <li class="nav-item" sec:authorize="hasAnyRole('Admin','Dispatch')">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse4"
                aria-expanded="true" aria-controls="collapse4">
                 <i class="glyphicon glyphicon-map-marker"></i>
@@ -114,6 +114,34 @@
                     <h6 class="collapse-header">Custom Components:</h6>
                     <a class="collapse-item"  th:href="@{/Ajouterzone}">Ajouter les zones </a>
                     <a class="collapse-item" th:href="@{/Listezone}">Lister les zones </a>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('Dispatch')">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse5"
+               aria-expanded="true" aria-controls="collapse5">
+                <i class="glyphicon glyphicon-map-marker"></i>
+                <span>Gestion des affectations par Zones</span>
+            </a>
+            <div id="collapse5" class="collapse" aria-labelledby="heading4" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Par Zone </h6>
+                    <a class="collapse-item"  th:href="@{/AjouterAffectation}">Affecter un commande </a>
+                    <a class="collapse-item" th:href="@{/ListeAffectation}">Lister les affectations </a>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('Dispatch')">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse6"
+               aria-expanded="true" aria-controls="collapse6">
+                <i class="glyphicon glyphicon-map-marker"></i>
+                <span>Gestion des affectations au conducteurs </span>
+            </a>
+            <div id="collapse6" class="collapse" aria-labelledby="heading4" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">au conducteurs:</h6>
+                    <a class="collapse-item"  th:href="@{/AjouterAffectationC}">Affecter un commande </a>
+                    <a class="collapse-item" th:href="@{/ListeAffectationC}">Lister les affectations </a>
                 </div>
             </div>
         </li>

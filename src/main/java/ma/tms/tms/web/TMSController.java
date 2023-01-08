@@ -1,14 +1,8 @@
 package ma.tms.tms.web;
 
 import lombok.AllArgsConstructor;
-import ma.tms.tms.entities.Conducteurs;
-import ma.tms.tms.entities.Commande;
-import ma.tms.tms.entities.Vehicules;
-import ma.tms.tms.entities.Zone;
-import ma.tms.tms.repositories.ConducteursRepository;
-import ma.tms.tms.repositories.CommandeRepository;
-import ma.tms.tms.repositories.VehiculesRepository;
-import ma.tms.tms.repositories.ZoneRepository;
+import ma.tms.tms.entities.*;
+import ma.tms.tms.repositories.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -23,7 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 public class TMSController {
     private CommandeRepository commandeRepository;
+    private AffectationCRepository affectationCRepository;
     private ZoneRepository zoneRepository;
+    private AffectationRepository affectationRepository;
     private ConducteursRepository conducteursRepository;
     private VehiculesRepository vehiculesRepository;
 
@@ -50,7 +46,7 @@ public class TMSController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/accueil";
+        return "redirect:/Dashboard";
     }
 
     @GetMapping("/ListeCommande")
@@ -144,11 +140,13 @@ public class TMSController {
         model.addAttribute("keyword", keyword);
         return "Listeconducteurs";
     }
+
     @GetMapping("/deleteconducteur")
     public String deleteconducteur(Long id, String keyword, int page) {
         conducteursRepository.deleteById(id);
         return "redirect:/Listeconducteurs?page=" + page + "&keyword=" + keyword;
     }
+
     @GetMapping("/Ajouterconducteurs")
     public String Ajouterconducteurs(Model model) {
         model.addAttribute("conducteurs", new Conducteurs());
@@ -182,10 +180,10 @@ public class TMSController {
     /************************************vehicule ***************************************************/
 
     @GetMapping(path = "/ListeVehicules")
-    public String vehicules (Model model,
-                        @RequestParam(name = "page", defaultValue = "0") int page,
-                        @RequestParam(name = "size", defaultValue = "5") int size,
-                        @RequestParam(name = "keyword", defaultValue = "") String keyword
+    public String vehicules(Model model,
+                            @RequestParam(name = "page", defaultValue = "0") int page,
+                            @RequestParam(name = "size", defaultValue = "5") int size,
+                            @RequestParam(name = "keyword", defaultValue = "") String keyword
     ) {
         Page<Vehicules> pagevehicules = vehiculesRepository.findByNomContains((keyword), PageRequest.of(page, size));
         model.addAttribute("listvehicule", pagevehicules.getContent());
@@ -206,6 +204,7 @@ public class TMSController {
     public List<Vehicules> listvehicule() {
         return vehiculesRepository.findAll();
     }
+
     @GetMapping(path = "/editvehicules")
     public String editvehicules(Model model, long id, String keyword, int page) {
         Vehicules vehicules = vehiculesRepository.findById(id).orElse(null);
@@ -223,8 +222,9 @@ public class TMSController {
         vehiculesRepository.save(vehicules);
         return "redirect:/ListeVehicules?page=" + page + "&keyword=" + keyword;
     }
+
     @GetMapping("/deletevehicules")
-    public String deletevehicules (Long id, String keyword, int page) {
+    public String deletevehicules(Long id, String keyword, int page) {
         vehiculesRepository.deleteById(id);
         return "redirect:/ListeVehicules?page=" + page + "&keyword=" + keyword;
     }
@@ -238,12 +238,13 @@ public class TMSController {
         model.addAttribute("keyword", keyword);
         return "detailVehicules";
     }
+
     /***************************************Zone**********************************************/
     @GetMapping(path = "/Listezone") /*nom de pages*/
-    public String zone (Model model,
-                              @RequestParam(name = "page", defaultValue = "0") int page,
-                              @RequestParam(name = "size", defaultValue = "5") int size,
-                              @RequestParam(name = "keyword", defaultValue = "") String keyword
+    public String Zone(Model model,
+                       @RequestParam(name = "page", defaultValue = "0") int page,
+                       @RequestParam(name = "size", defaultValue = "5") int size,
+                       @RequestParam(name = "keyword", defaultValue = "") String keyword
     ) {
         Page<Zone> pagezone = zoneRepository.findByNomContains((keyword), PageRequest.of(page, size));
         model.addAttribute("listzone", pagezone.getContent());
@@ -275,16 +276,123 @@ public class TMSController {
         model.addAttribute("keyword", keyword);
         return "editZone";
     }
+
     @GetMapping("/deleteZone")
     public String deleteZone(Long id, String keyword, int page) {
         zoneRepository.deleteById(id);
         return "redirect:/Listezone?page=" + page + "&keyword=" + keyword;
     }
+
     @PostMapping(path = "/save1")
     public String save1(Model model, @Valid Zone zone, BindingResult bindingResult,
-                       @RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "0") int page) {
+                        @RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "0") int page) {
         if (bindingResult.hasErrors()) return "Ajouterzone";
         zoneRepository.save(zone);
         return "redirect:/Listezone?page=" + page + "&keyword=" + keyword;
     }
+
+    /***************************************Affectation**********************************************/
+    @GetMapping(path = "/ListeAffectation") /*nom de pages*/
+    public String Affectation(Model model,
+                              @RequestParam(name = "page", defaultValue = "0") int page,
+                              @RequestParam(name = "size", defaultValue = "5") int size,
+                              @RequestParam(name = "keyword", defaultValue = "") String keyword
+    ) {
+        Page<Affectation> pageAffectation = affectationRepository.findByNomContains((keyword), PageRequest.of(page, size));
+        model.addAttribute("listAffectation", pageAffectation.getContent());
+        model.addAttribute("pages", new int[pageAffectation.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+        return "ListeAffectation";
+    }
+
+    @GetMapping("/AjouterAffectation")
+    public String AjouterAffectation(Model model) {
+        model.addAttribute("affectation", new Affectation());
+        return "AjouterAffectation";
+    }
+
+
+    @GetMapping("/Affectation")
+    @ResponseBody
+    public List<Affectation> listAffectation() {
+        return affectationRepository.findAll();
+    }
+
+    @GetMapping(path = "/editAffectation")
+    public String editAffectation(Model model, long id, String keyword, int page) {
+        Affectation affectation = affectationRepository.findById(id).orElse(null);
+        if (affectation == null) throw new RuntimeException("Affectation introuvable");
+        model.addAttribute("affectation", affectation);
+        model.addAttribute("page", page);
+        model.addAttribute("keyword", keyword);
+        return "editAffectation";
+    }
+
+    @GetMapping("/deleteAffectation")
+    public String deleteAffectation(Long id, String keyword, int page) {
+        affectationRepository.deleteById(id);
+        return "redirect:/ListeAffectation?page=" + page + "&keyword=" + keyword;
+    }
+
+    @PostMapping(path = "/save2")
+    public String save1(Model model, @Valid Affectation affectation, BindingResult bindingResult,
+                        @RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "0") int page) {
+        if (bindingResult.hasErrors()) return "AjouterAffectation";
+        affectationRepository.save(affectation);
+        return "redirect:/ListeAffectation?page=" + page + "&keyword=" + keyword;
+
+    }
+
+    /***************************************AffectationCommande**********************************************/
+    @GetMapping(path = "/ListeAffectationC") /*nom de pages*/
+    public String AffectationC(Model model,
+                              @RequestParam(name = "page", defaultValue = "0") int page,
+                              @RequestParam(name = "size", defaultValue = "5") int size,
+                              @RequestParam(name = "keyword", defaultValue = "") String keyword
+    ) {
+        Page<AffectationC> pageAffectationC = affectationCRepository.findByNomContains((keyword), PageRequest.of(page, size));
+        model.addAttribute("listAffectationC", pageAffectationC.getContent());
+        model.addAttribute("pages", new int[pageAffectationC.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+        return "ListeAffectationC";
+    }
+
+    @GetMapping("/AjouterAffectationC")
+    public String AjouterAffectationC(Model model) {
+        model.addAttribute("affectationC", new AffectationC());
+        return "AjouterAffectationC";
+    }
+
+    @GetMapping("/AffectationC")
+    @ResponseBody
+    public List<AffectationC> listAffectationC() {
+        return affectationCRepository.findAll();
+    }
+
+    @GetMapping(path = "/editAffectationC")
+    public String editAffectationC(Model model, long id, String keyword, int page) {
+        AffectationC affectationC= affectationCRepository.findById(id).orElse(null);
+        if (affectationC == null) throw new RuntimeException("Affectation introuvable");
+        model.addAttribute("affectationC", affectationC);
+        model.addAttribute("page", page);
+        model.addAttribute("keyword", keyword);
+        return "editAffectationC";
+    }
+    @GetMapping("/deleteAffectationC")
+    public String deleteAffectationC(Long id, String keyword, int page) {
+        affectationCRepository.deleteById(id);
+        return "redirect:/ListeAffectationC?page=" + page + "&keyword=" + keyword;
+    }
+    @PostMapping(path = "/save3")
+    public String save1(Model model, @Valid AffectationC affectationC, BindingResult bindingResult,
+                        @RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "0") int page) {
+        if (bindingResult.hasErrors()) return "AjouterAffectationC";
+        affectationCRepository.save(affectationC);
+        return "redirect:/ListeAffectationC?page=" + page + "&keyword=" + keyword;
+
+ }
+
+
 }

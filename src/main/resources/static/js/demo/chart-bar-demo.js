@@ -39,7 +39,7 @@ var myBarChart = new Chart(ctx, {
       backgroundColor: "#4e73df",
       hoverBackgroundColor: "#2e59d9",
       borderColor: "#4e73df",
-      data: [, , , 20, 50,10, ],
+      data: [25,70,20 , , , ,, ],
     }],
   },
   options: {
@@ -104,7 +104,7 @@ var myBarChart = new Chart(ctx, {
       callbacks: {
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return   "Nombre des interventions : "+number_format(tooltipItem.yLabel)+ ' %';
+          return   "Nombre des commandes livreé : "+number_format(tooltipItem.yLabel)+ ' %';
         }
       }
     },
